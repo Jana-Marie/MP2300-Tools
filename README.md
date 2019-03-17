@@ -9,11 +9,13 @@ This repo contains Tools and informations on how to control Graphtec MP2300 plot
 Convert hpgl to gpgl with `hpgl2gpgl.py`.
 
   `./hpgl2serial.py <input-file> <output-file> <speed>`
+  
   `./hpgl2serial.py test.hpgl test.gpgl 99`
 
 Send hpgl to your gpgl plotter with `hpgl2serial.py`.
 
   `./hpgl2serial.py <input-file> <output> <speed>`
+  
   `./hpgl2serial.py test.hpgl /dev/ttyUSB0 99`
 
 ## Hardware
