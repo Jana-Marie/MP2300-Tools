@@ -23,31 +23,22 @@ serial.flush()
 
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "IN":
-		serial.write('\x1B'.encode())
-		serial.write('\x03'.encode())		
-		serial.write("FU3564,5268".encode())	
-		serial.write('\x03'.encode())	
-		serial.write("FM1".encode())	
-		serial.write('\x03'.encode())			
-		serial.write("TB50,1".encode())	
-		serial.write('\x03'.encode())			
-		serial.write("FO3564".encode())	
-		serial.write('\x03'.encode())
-		serial.write("&100,100,100,\0,0,Z5588,4064,L0,!{}.0".format(speed).encode())	
-		serial.write('\x03'.encode())	
-		serial.write("FX8,0".encode())	
-		serial.write('\x03'.encode())
+		serial.write('\x1B\x03'.encode())
+		serial.write("FU3564,5268\x03".encode())	
+		serial.write("FM1\x03".encode())	
+		serial.write("TB50,1\x03".encode())	
+		serial.write("FO3564\x03".encode())	
+		serial.write("&100,100,100,\0,0,Z5588,4064,L0,!{}.0\x03".format(speed).encode())	
+		serial.write("FX8,0\x03".encode())	
 	elif c[:2] == "PD":
 		serial.write("D".encode())
 		for sc in c[2:len(c)]:
 			serial.write(sc.encode())
-			#time.sleep(0.005)		
 		serial.write('\x03'.encode())	
 	elif c[:2] == "PA":
 		serial.write("M".encode())
 		for sc in c[2:len(c)]:
 			serial.write(sc.encode())
-			#time.sleep(0.005)		
 		serial.write('\x03'.encode())
 	elif c[:2] == "PU":
 		serial.write("M".encode())
@@ -58,17 +49,15 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		serial.write(c[2:len(c[2:])-1].encode())
 		serial.write('\x03'.encode())
 	else:
-		#serial.write("{} is missing. Payload: {}".format(c[:2],c[2:]))
 		commandsMissing.append(c)
 		pass
-	#time.sleep(0.05);
-#time.sleep(0.02)
+
 serial.write("&1,1,1,TB50,0\x03".encode())
 serial.write("FO0\x03".encode())    
-serial.write("H,".encode())
+serial.write("H,\x03".encode())
 serial.flush()
 
-time.sleep(10)
+time.sleep(10) #wait for the serial buffer to be flushed
 
 if len(commandsMissing) > 0:
 	serial.write("The following commands where missing")
