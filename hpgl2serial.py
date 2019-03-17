@@ -19,6 +19,8 @@ for l in line:
 			commands.append(c)
 commandsMissing = []
 
+serial.flush()
+
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "IN":
 		serial.write('\x1B'.encode())
@@ -61,9 +63,12 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		pass
 	#time.sleep(0.05);
 #time.sleep(0.02)
-serial.write("&1,1,1,TB50,0\x03")
-serial.write("FO0\x03")    # feed the page out
-serial.write("H,")         # halt?
+serial.write("&1,1,1,TB50,0\x03".encode())
+serial.write("FO0\x03".encode())    
+serial.write("H,".encode())
+serial.flush()
+
+time.sleep(10)
 
 if len(commandsMissing) > 0:
 	serial.write("The following commands where missing")
