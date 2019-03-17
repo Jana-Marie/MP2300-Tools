@@ -1,5 +1,7 @@
 # MP2300-Tools
 
+This repo contains Tools and informations on how to control Graphtec MP2300 plotters.
+
 [![example](https://pbs.twimg.com/media/D10XChTWkAEfoFP.jpg:large)](https://twitter.com/JanHenrikH/status/1107066424982417409)
 
 ## Software
