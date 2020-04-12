@@ -127,7 +127,7 @@ if format == "A3":
 		yoffset = (ymaxA3 - ((yfilemax - yfilemin) * scalingfactor)) / 2
 
 
-if format == "A":
+if format == "A4":
 	if scale == 0 and (xfilemax > xmaxA4 or yfilemax > ymaxA4):
 		print("File too big for selected format. Try again with scaling.")
 		exit(0)
