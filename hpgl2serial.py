@@ -91,24 +91,23 @@ yfilemax = 0
 
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "PD":
-		for sc in c[2:len(c)]:
-			list = c[2:len(c)].split (",")
-			li = []
-			for i in list:
-				li.append(int(i))
-			cnt = 0
-			for i in li:
-				if cnt % 2 == 0:
-					if i < xfilemin:
-						xfilemin = i
-					if i > xfilemax:
-						xfilemax = i
-				else:
-					if i < yfilemin:
-						yfilemin = i
-					if i > yfilemax:
-						yfilemax = i
-				cnt += 1
+		list = c[2:len(c)].split (",")
+		li = []
+		for i in list:
+			li.append(int(i))
+		cnt = 0
+		for i in li:
+			if cnt % 2 == 0:
+				if i < xfilemin:
+					xfilemin = i
+				if i > xfilemax:
+					xfilemax = i
+			else:
+				if i < yfilemin:
+					yfilemin = i
+				if i > yfilemax:
+					yfilemax = i
+			cnt += 1
 
 scalingfactor = 1.0
 
@@ -142,6 +141,8 @@ if format == "A4":
 		yoffset = (ymaxA4 - ((yfilemax - yfilemin) * scalingfactor)) / 2
 #exit(0)
 
+
+
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "IN":
 		serial.write('\x1B\x03'.encode())
@@ -157,26 +158,38 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		#serial.write("SO\x03".encode())
 	elif c[:2] == "PD":
 		serial.write("D".encode())
-		for sc in c[2:len(c)]:
-			list = c[2:len(c)].split (",")
-			li = []
-			for i in list:
-				li.append(int(i))
-			cmd = ""
-			cnt = 0
-			for i in li:
-				if cnt % 2 == 0:
-					cmd += str(int(i*scalingfactor+xoffset)) + ","
-				elif cnt == len(li)-1:
-					cmd += str(int(i*scalingfactor+yoffset))
-				else:
-					cmd += str(int(i*scalingfactor+yoffset)) + ","
-				cnt += 1
+
+		list = c[2:len(c)].split (",")
+		li = []
+		for i in list:
+			li.append(int(i))
+		cmd = ""
+		cnt = 0
+		for i in li:
+			if cnt % 2 == 0:
+				cmd += str(int(i*scalingfactor+xoffset)) + ","
+			elif cnt == len(li)-1:
+				cmd += str(int(i*scalingfactor+yoffset))
+			else:
+				cmd += str(int(i*scalingfactor+yoffset)) + ","
+			cnt += 1
+
+			if cnt % 512 == 0: # split up very long commands
+				serial.write(cmd.encode())
+				cmd = ""
+				serial.write('\x03'.encode())
+				resp = 0
+				while resp != 1344:
+					serial.write("V".encode())
+					serial.write('\x03'.encode())
+					resp = int(serial.readline())
+					time.sleep(0.1)
+				serial.write("D".encode())
+
 		serial.write(cmd.encode())
 		#print(cmd)
 		serial.write('\x03'.encode())
-		#print("Sleep " + str(0.05 * len(li)) + "s")
-		#time.sleep(0.05 * len(li))
+
 		resp = 0
 		while resp != 1344:
 			serial.write("V".encode())
