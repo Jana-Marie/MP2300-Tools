@@ -42,7 +42,7 @@ for index,c in enumerate(commands[:len(commands)-1]):
 	elif c[:2] == "PD":
 		if mode == 0:
 			fOut.write("D")
-		else
+		else:
 			fOut.write("E")
 		for sc in c[2:len(c[2:])-1]:
 			fOut.write(sc)
@@ -50,7 +50,7 @@ for index,c in enumerate(commands[:len(commands)-1]):
 	elif c[:2] == "PA":
 		if mode == 0:
 			fOut.write("M")
-		else
+		else:
 			fOut.write("O")
 		for sc in c[2:len(c[2:])-1]:
 			fOut.write(sc)
@@ -58,7 +58,7 @@ for index,c in enumerate(commands[:len(commands)-1]):
 	elif c[:2] == "PU":
 		if mode == 0:
 			fOut.write("M")
-		else
+		else:
 			fOut.write("O")
 		fOut.write(c[2:len(c[2:])-1])
 		fOut.write('\x03')	
