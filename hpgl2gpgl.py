@@ -21,6 +21,8 @@ commandsMissing = []
 print("Reading file: {}".format(sys.argv[1]))
 print("Now processing {} lines of HPGL to GPGL".format(len(commands)-1))
 
+mode = 0 # 0 = absolute, 1 = relative
+
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "IN":
 		fOut.write('\x1B')
@@ -38,19 +40,26 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		fOut.write("FX8,0")	
 		fOut.write('\x03')
 	elif c[:2] == "PD":
-		fOut.write("D")
+		if mode == 0:
+			fOut.write("D")
+		else
+			fOut.write("E")
 		for sc in c[2:len(c[2:])-1]:
 			fOut.write(sc)
-			time.sleep(0.01)
 		fOut.write('\x03')	
 	elif c[:2] == "PA":
-		fOut.write("M")
+		if mode == 0:
+			fOut.write("M")
+		else
+			fOut.write("O")
 		for sc in c[2:len(c[2:])-1]:
 			fOut.write(sc)
-			time.sleep(0.01)
 		fOut.write('\x03')
 	elif c[:2] == "PU":
-		fOut.write("M")
+		if mode == 0:
+			fOut.write("M")
+		else
+			fOut.write("O")
 		fOut.write(c[2:len(c[2:])-1])
 		fOut.write('\x03')	
 	elif c[:2] == "SP":
@@ -58,14 +67,13 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		fOut.write(c[2:len(c[2:])-1])
 		fOut.write('\x03')
 	else:
-		#print("{} is missing. Payload: {}".format(c[:2],c[2:]))
 		commandsMissing.append(c)
 		pass
 
 	print("{}%".format((int)(((index+1)/(len(commands)-1))*100)), end='\r', flush=True)
 fOut.write("&1,1,1,TB50,0\x03")
 fOut.write("FO0\x03")    # feed the page out
-fOut.write("H,")         # halt?
+fOut.write("H,")         # halt
 
 print()
 print("Written file: {}".format(sys.argv[2]))
