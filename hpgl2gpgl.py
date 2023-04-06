@@ -22,59 +22,66 @@ print("Reading file: {}".format(sys.argv[1]))
 print("Now processing {} lines of HPGL to GPGL".format(len(commands)-1))
 
 mode = 0 # 0 = absolute, 1 = relative
+out = ""
 
 for index,c in enumerate(commands[:len(commands)-1]):
 	if c[:2] == "IN":
-		fOut.write('\x1B')
-		fOut.write('\x03')		
-		fOut.write("FU3564,5268")	
-		fOut.write('\x03')	
-		fOut.write("FM1")	
-		fOut.write('\x03')			
-		fOut.write("TB50,1")	
-		fOut.write('\x03')			
-		fOut.write("FO3564")	
-		fOut.write('\x03')
-		fOut.write("&100,100,100,\0,0,Z5588,4064,L0,!{}.0".format(speed))	
-		fOut.write('\x03')	
-		fOut.write("FX8,0")	
-		fOut.write('\x03')
+		out += '\x1B'
+		out += '\x03'		
+		out += "FU3564,5268"	
+		out += '\x03'	
+		out += "FM1"	
+		out += '\x03'			
+		out += "TB50,1"	
+		out += '\x03'			
+		out += "FO3564"	
+		out += '\x03'
+		out += "&100,100,100,\0,0,Z5588,4064,L0,!{}.0".format(speed)	
+		out += '\x03'	
+		out += "FX8,0"	
+		out += '\x03'
 	elif c[:2] == "PD":
 		if mode == 0:
-			fOut.write("D")
+			out += "D"
 		else:
-			fOut.write("E")
-		for sc in c[2:len(c[2:])-1]:
-			fOut.write(sc)
-		fOut.write('\x03')	
+			out += "E"
+		for sc in c[2:]:
+			out += sc
+		out += '\x03'
 	elif c[:2] == "PA":
 		if mode == 0:
-			fOut.write("M")
+			out += "M"
 		else:
-			fOut.write("O")
-		for sc in c[2:len(c[2:])-1]:
-			fOut.write(sc)
-		fOut.write('\x03')
+			out += "O"
+		for sc in c[2:]:
+			out += sc
+		out += '\x03'
 	elif c[:2] == "PU":
 		if mode == 0:
-			fOut.write("M")
+			out += "M"
 		else:
-			fOut.write("O")
-		fOut.write(c[2:len(c[2:])-1])
-		fOut.write('\x03')	
+			out += "O"
+		out += c[2:]
+		out += '\x03'
 	elif c[:2] == "SP":
-		fOut.write("j")
-		fOut.write(c[2:len(c[2:])-1])
-		fOut.write('\x03')
+		out += "j"
+		out += c[2:]
+		out += '\x03'
+	elif c[:2] == "VS":
+		out += "!"
+		out += c[2:]
+		out += '\x03'
 	else:
 		commandsMissing.append(c)
 		pass
 
 	print("{}%".format((int)(((index+1)/(len(commands)-1))*100)), end='\r', flush=True)
-fOut.write("&1,1,1,TB50,0\x03")
-fOut.write("FO0\x03")    # feed the page out
-fOut.write("H,")         # halt
+out += "&1,1,1,TB50,0\x03"
+out += "FO0\x03"    # feed the page out
+out += "H,"         # halt
 
+
+fOut.write(out)
 print()
 print("Written file: {}".format(sys.argv[2]))
 
