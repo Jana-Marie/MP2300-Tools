@@ -71,6 +71,10 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		out += "!"
 		out += c[2:]
 		out += '\x03'
+	elif c[:2] == "PR":
+		mode = 1
+	elif c[:2] == "PA":
+		mode = 0
 	else:
 		commandsMissing.append(c)
 		pass
