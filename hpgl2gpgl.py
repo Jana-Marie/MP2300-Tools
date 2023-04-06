@@ -61,7 +61,6 @@ for index,c in enumerate(commands[:len(commands)-1]):
 		#print("{} is missing. Payload: {}".format(c[:2],c[2:]))
 		commandsMissing.append(c)
 		pass
-	time.sleep(1)
 
 	print("{}%".format((int)(((index+1)/(len(commands)-1))*100)), end='\r', flush=True)
 fOut.write("&1,1,1,TB50,0\x03")
